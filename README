@@ -1,0 +1,39 @@
+`diffsvg` determines the differences between two SVG images.
+
+Motivation
+----------
+
+Many very useful tools for collaborative software development have evolved over the years. The `diff` tool is a good example because it is important during software development to be able to automatically determine differences between two versions of the same source code file. In principle, one can use `diff` on a vector image defined as an SVG image since all of the image data is encoded as plain text XML markup. Practically speaking, this approach won't work because two SVG documents could be logically identical while bearing little syntactical resemblance to one another. The purpose of this project is to produce a `diff` tool that works at the appropriate level of abstraction to determine differences between two SVG files. This tool will be useful to people who work on SVG graphics in the same way that the traditional `diff` tool is useful to people who write source code. For single users who are creating SVG graphics using version control, `diffsvg` will allow them to quickly spot differences between revisions. For groups of users that collaborate on making SVG graphics, `diffsvg` will easily expose changes that different team members have made to the same file.
+
+Design
+------
+
+The SVG file format is a fairly complicated [XML definition](http://www.w3.org/TR/SVG11/). Furthermore, different programs produce varying levels of quality of SVG. For the sake of simplicity, it is easiest to think of an SVG file as having two main parts: the metadata section, and the data section. The metadata section is not rendered graphically, but contains information such as the author, title, software used to create the file, rights, and so on. The data section holds containers and elements. Containers are things like layers and groups and can contain other containers or elements. Elements are things like lines, polygons, text, etc. and are displayed when the SVG is rendered. The `diffsvg` tool should look at all fo the metadata items and all of the elements and containers in order to create the diff. For the sake of the alpha release, we will assume that the SVG was created with [inkscape](http://inkscape.org/) and all of the elements have a unique identifier ("id" property in the XML). For later revisions, we will need to consider less well structured SVG files. In that case, the location and type of element will likely have to be considered in order to successfully diff the files.
+
+The `diffsvg` will have a command line utility in the spirit of the unix philosophy: "Do one thing and do it well." This tool will also be a package; it should be importable into other programs. From the command line, the user should be able to select from two output choices:
+
+1. Pretty-print a digest of differences to `stdout`.
+2. Write an SVG file containing the differences to the filesystem (or serialize the XML to be piped someplace else).
+
+The default behavior will be to pretty-print to `stdout`. Under the hood, the diff engine will likely create some kind of SVG XML of the diff and only at the last step parse it for pretty-printing. The pretty-printed digest will be the default because it will likely fit in with the workflow the user is currently experiencing: the user has just fetched some changed from a git remote and just wants to know what parts of the SVG file have changed. He shouldn't have to switch over to the mouse, just pipe the results to less and use the j/k keys to step through the result. For example, perhaps the user's collaborator just changed some text description in the SVG's metadata. The output would read something like:
+
+    +++ old-version.svg
+    --- freshly-fetched-version.svg
+    
+    Metadata:
+	    Element: Description
+	    +++ "This is a good graphic."
+	    +++ "This is the AWESOMEST graphic ever!"
+	
+As for SVG file output from the diff tool, there are several options. Here is a list of possibilities:
+
+* Output an SVG file of the elements that are common between the two input files.
+* Output an SVG of ONLY the elements in A.svg that do not exist in B.svg.
+* Output an SVG of ONLY the elements in B.svg that do not exist in A.svg.
+* Output an SVG of ONLY the elements in A.svg that are different in B.svg.
+* Some combination of the above.
+
+In all cases of the SVG file output, a message should print to `stdout` informing the user of any changes to parts that aren't rendered: e.g. metadata, etc.
+
+Since the (oversimplified) input into this tool is SVG that comes out of inkscape, every element/group/layer/etc. will have a unique ID. The task is to parse the XML, match the ids of the elements/groups/layer/yaddayadda in A.svg to the things in B.svg and see if there is a difference. For example, perhaps there is a new layer in B.svg. Maybe some elements in A.svg were grouped and moved to a new layer in B.svg. Perhaps the color or size of an element changes from A.svg to B.svg. The unique ids are the key to determining the differences.
+
