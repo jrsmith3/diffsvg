@@ -1,3 +1,6 @@
+diffsvg
+=======
+
 `diffsvg` determines the differences between two SVG images.
 
 Motivation
