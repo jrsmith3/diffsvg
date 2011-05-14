@@ -1,0 +1,2 @@
+WHEN I add a circle under a square
+it SHOULD generate an insert-before

@@ -1,0 +1,2 @@
+WHEN I increase the size of an element,
+it SHOULD generate an < undefined at moment >
