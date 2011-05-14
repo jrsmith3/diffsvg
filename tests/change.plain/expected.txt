@@ -1,0 +1,2 @@
+WHEN I transform a square into a triangle,
+it SHOULD generate an insert & it SHOULD generate a remove
