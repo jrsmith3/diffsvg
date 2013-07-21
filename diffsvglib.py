@@ -28,6 +28,24 @@ def extra_node_ids(a, b):
 
     return ids_a - ids_b
 
+def common_attrib_keys(a, b):
+    """
+    Return list of attributes which are common between two SVG elements by attribute key.
+
+    :param xml.etree.ElementTree.Element a: First element
+    :param xml.etree.ElementTree.Element b: Second element
+    """
+    return set(a.attrib.keys()) & set(b.attrib.keys())
+
+def extra_attrib_keys(a, b):
+    """
+    Return list of attributes in a which aren't in b by attribute key.
+
+    :param xml.etree.ElementTree.Element a: First element
+    :param xml.etree.ElementTree.Element b: Second element
+    """
+    return set(a.attrib.keys()) - set(b.attrib.keys())
+
 def node_compare(a, b):
     """
     Return list of attribute names which differ between two SVG nodes.
