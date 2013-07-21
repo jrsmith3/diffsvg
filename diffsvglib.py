@@ -65,4 +65,24 @@ def get_node_by_id(et_root, uid):
     elif len(nodes) == 1:
         return nodes[0]
     else:
-        raise RuntimeError("Duplicate node id found: {0}".format(uid))
+        raise RuntimeError("Duplicate node id found: {0}.".format(uid))
+
+def get_parent_node_by_id(et_root, uid):
+    """
+    Given an id, return the parent node. Return None if there's no parent.
+
+    :param xml.etree.ElementTree.Element et_root: SVG document in which to search.
+    :param str uid: Unique identifier of an SVG node.
+    """
+    if et_root.attrib["id"] == uid:
+        return None
+
+    nodes = et_root.findall(".//*[@id='{0}']..".format(uid))
+
+    if len(nodes) == 0:
+        raise RuntimeError("No node with id {0} found.".format(uid))
+    elif len(nodes) == 1:
+        return nodes[0]
+    else:
+        raise RuntimeError("Duplicate node id found: {0}.".format(uid))
+
