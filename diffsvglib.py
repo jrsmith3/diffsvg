@@ -45,14 +45,3 @@ def extra_attrib_keys(a, b):
     :param xml.etree.ElementTree.Element b: Second element
     """
     return set(a.attrib.keys()) - set(b.attrib.keys())
-
-def node_compare(a, b):
-    """
-    Return list of attribute names which differ between two SVG nodes.
-
-    There are at least two ways of thinking of what's happening here. First, Does a contain keys that aren't found in b (or vice-versa). Second, of the common keys, which attributes are different?
-
-    :param ElementTree.Element a: First SVG element.
-    :param ElementTree.Element b: Second SVG element.
-    """
-    pass
