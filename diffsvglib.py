@@ -45,3 +45,24 @@ def extra_attrib_keys(a, b):
     :param xml.etree.ElementTree.Element b: Second element
     """
     return set(a.attrib.keys()) - set(b.attrib.keys())
+
+def get_node_by_id(et_root, uid):
+    """
+    Return the node given an id.
+
+    Returns None if the uid is not found in the SVG.
+
+    :param xml.etree.ElementTree.Element et_root: SVG document in which to search.
+    :param str uid: Unique identifier of an SVG node.
+    """
+    if et_root.attrib["id"] == uid:
+        return et_root
+
+    nodes = et_root.findall(".//*[@id='{0}']".format(uid))
+
+    if len(nodes) == 0:
+        return None
+    elif len(nodes) == 1:
+        return nodes[0]
+    else:
+        raise RuntimeError("Duplicate node id found: {0}".format(uid))
