@@ -8,8 +8,8 @@ def common_node_ids(a, b):
     """
     Return list of nodes which are common between two SVG documents by id attribute.
 
-    :param str a: String containing filename of first SVG document.
-    :param str b: String containing filename of second SVG document.
+    :param etree.ElementTree a: ElementTree representing first SVG document.
+    :param etree.ElementTree a: ElementTree representing second SVG document.
     """
     ids_a = set([ el.attrib['id'] for el in a.iter() ])
     ids_b = set([ el.attrib['id'] for el in b.iter() ])
@@ -20,8 +20,8 @@ def extra_node_ids(a, b):
     """
     Return list of nodes in a which aren't in b by id attribute.
 
-    :param str a: String containing filename of first SVG document.
-    :param str b: String containing filename of second SVG document.
+    :param etree.ElementTree a: ElementTree representing first SVG document.
+    :param etree.ElementTree a: ElementTree representing second SVG document.
     """
     ids_a = set([ el.attrib['id'] for el in a.iter() ])
     ids_b = set([ el.attrib['id'] for el in b.iter() ])
